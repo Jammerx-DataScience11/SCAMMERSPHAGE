@@ -7,6 +7,10 @@ import {
 } from 'lucide-react';
 import './App.css';
 
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+).replace(/\/$/, '');
+
 const DEFAULT_SEED_HISTORY = [
   { id: 101, url: 'https://www.wikipedia.org', result: 'Safe', date: 'Nov 7, 2026, 10:24 AM' },
   { id: 102, url: 'https://example-phishing.com', result: 'Unsafe', date: 'Nov 6, 2026, 08:17 PM' },
@@ -59,7 +63,7 @@ function App() {
 
   const loadHistoryFromDB = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8000/history');
+      const res = await fetch($/history);
       if (res.ok) {
         const data = await res.json();
         if (data.history && data.stats) {
@@ -90,7 +94,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/scan?url=${encodeURIComponent(targetUrl)}&save=${saveHistory}`
+        `${API_BASE_URL}/scan?url=${encodeURIComponent(targetUrl)}&save=${saveHistory}`
       );
       if (!response.ok) throw new Error('Backend error');
       const data = await response.json();
@@ -851,7 +855,7 @@ function ScanResultBreakdown({ result, onReportSuccess }) {
   const handleReportThreat = async () => {
     setIsReporting(true);
     try {
-      await fetch(`http://127.0.0.1:8000/report?url=${encodeURIComponent(liveResult.url)}`, {
+      await fetch(`${API_BASE_URL}/report?url=${encodeURIComponent(liveResult.url)}`, {
         method: 'POST'
       });
     } catch (err) {

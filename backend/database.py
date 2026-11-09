@@ -136,4 +136,4 @@ def is_domain_reported(domain: str) -> bool:
     cursor.execute("SELECT 1 FROM reported_domains WHERE domain = ?", (domain,))
     found = cursor.fetchone() is not None
     conn.close()
-    return founds
+    return found

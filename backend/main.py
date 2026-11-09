@@ -4,16 +4,28 @@ from threat_ai import analyze_phishing
 from security_check import check_ssl_and_headers
 from intel_feed import check_blacklists, report_malicious_domain
 from database import init_db, log_scan, get_history_and_stats
+import os
 
 app = FastAPI()
 
 # Create medjay.db and tables on startup
 init_db()
 
+frontend_origins = os.getenv(
+    "FRONTEND_ORIGINS",
+    "http://localhost:5173"
+)
+
+allowed_origins = [
+    origin.strip().rstrip("/")
+    for origin in frontend_origins.split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
